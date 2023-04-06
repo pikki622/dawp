@@ -31,9 +31,9 @@ def N(d):
 def d1f(St, K, t, T, r, sigma):
     ''' Black-Scholes-Merton d1 function.
         Parameters see e.g. BSM_Call function. '''
-    d1 = (math.log(St / K) + (r + (0.5 * sigma ** 2)) *
-          (T - t)) / (sigma * math.sqrt(T - t))
-    return d1
+    return (math.log(St / K) + (r + (0.5 * sigma**2)) * (T - t)) / (
+        sigma * math.sqrt(T - t)
+    )
 
 #
 # Valuation Functions
@@ -65,8 +65,7 @@ def BSM_call_value(St, K, t, T, r, sigma):
     '''
     d1 = d1f(St, K, t, T, r, sigma)
     d2 = d1 - sigma * math.sqrt(T - t)
-    call = St * N(d1) - math.exp(-r * (T - t)) * K * N(d2)
-    return call
+    return St * N(d1) - math.exp(-r * (T - t)) * K * N(d2)
 
 
 def BSM_put_value(St, K, t, T, r, sigma):
@@ -92,9 +91,9 @@ def BSM_put_value(St, K, t, T, r, sigma):
     put : float
         European put present value at t
     '''
-    put = (BSM_call_value(St, K, t, T, r, sigma) -
-           St + math.exp(-r * (T - t)) * K)
-    return put
+    return (
+        BSM_call_value(St, K, t, T, r, sigma) - St + math.exp(-r * (T - t)) * K
+    )
 
 
 #

@@ -80,8 +80,12 @@ def plot_imp_vols(data):
     plt.figure(figsize=(10, 5))
     for i, mat in enumerate(maturities):
         dat = data[(data['Maturity'] == mat) & (data['Imp_Vol'] > 0)]
-        plt.plot(dat['Strike'].values, dat['Imp_Vol'].values,
-                 'b%s' % markers[i], label=str(mat)[:10])
+        plt.plot(
+            dat['Strike'].values,
+            dat['Imp_Vol'].values,
+            f'b{markers[i]}',
+            label=str(mat)[:10],
+        )
     plt.grid()
     plt.legend()
     plt.xlabel('strike')

@@ -24,5 +24,4 @@ def read_dax_data():
 
 def count_jumps(data, value):
     ''' Counts the number of return jumps as defined in size by value. '''
-    jumps = np.sum(np.abs(data['returns']) > value)
-    return jumps
+    return np.sum(np.abs(data['returns']) > value)

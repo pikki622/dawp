@@ -73,7 +73,7 @@ def M76_generate_paths(S0, T, r, sigma, lamb, mu, delta, M, I):
     rand2 = np.random.standard_normal(shape)
     rand3 = np.random.poisson(lamb * dt, shape)
 
-    for t in range(1, M + 1, 1):
+    for t in range(1, M + 1):
         if disc == 1:
             S[t] = S[t - 1] * ((1 + (r - rj) * dt) + sigma *
                                math.sqrt(dt) * rand1[t] +

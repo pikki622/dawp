@@ -1,4 +1,4 @@
-for t in range(1, M + 1, 1):
+for t in range(1, M + 1):
         ran = np.dot(CM, rand[:, t])
         if momatch:
             bias = np.mean(np.sqrt(v[t]) * ran[row] * sdt)

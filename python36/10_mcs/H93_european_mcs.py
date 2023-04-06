@@ -170,7 +170,7 @@ def H93_generate_paths(S0, r, v, row, cho_matrix):
     S[0] = S0
     bias = 0.0
     sdt = math.sqrt(dt)
-    for t in range(1, M + 1, 1):
+    for t in range(1, M + 1):
         ran = np.dot(cho_matrix, rand[:, t])
         if momatch:
             bias = np.mean(np.sqrt(v[t]) * ran[row] * sdt)
@@ -230,80 +230,79 @@ if __name__ == '__main__':
                             x_disc_list, anti_paths, moment_matching):
         print('\n\n', alpha, '\n')
         option, M0, I, s_disc, x_disc, antipath, momatch = alpha
-        for run in range(runs):
-            for panel in range(4):
-                # Correlation Matrix
-                v0, kappa_v, sigma_v, rho = para[panel]
-                covariance_matrix = np.zeros((2, 2), dtype=np.float)
-                covariance_matrix[0] = [1.0, rho]
-                covariance_matrix[1] = [rho, 1.0]
-                cho_matrix = np.linalg.cholesky(covariance_matrix)
-                if verbose:
-                    print("\nResults for Panel %d\n" % (panel + 1))
-                    print(tmpl_1)
-                for T in t_list:  # maturity list
-                    # memory clean-up
-                    v, S, rand, h = 0.0, 0.0, 0.0, 0.0
-                    M = int(M0 * T)  # number of total time steps
-                    dt = T / M  # time interval in years
-                    # random numbers
-                    rand = random_number_generator(M, I)
-                    # volatility process paths
-                    v = SRD_generate_paths(x_disc, v0, kappa_v, theta_v,
-                                           sigma_v, T, M, I, rand, 1,
-                                           cho_matrix)
-                    # index level process paths
-                    S = H93_generate_paths(S0, r, v, 0, cho_matrix)
-                    for K in k_list:
-                        # European option values
-                        B0T = math.exp(-r * T)  # discount factor
-                        # European call option value (semi-analytical)
-                        C0 = H93_call_value(S0, K, T, r, kappa_v,
-                                            theta_v, sigma_v, rho, v0)
-                        P0 = C0 + K * B0T - S0
-                        if option is 'PUT':
-                            # benchmark value
-                            V0 = P0
-                            # inner value matrix put
-                            h = np.maximum(K - S, 0)
-                        elif option is 'CALL':
-                            # benchmark value
-                            V0 = C0
-                            # inner value matrix call
-                            h = np.maximum(S - K, 0)
-                        else:
-                            print("No valid option type.")
-                            sys.exit(0)
-                        pv = B0T * h[-1]  # present value vector
-                        V0_MCS = np.sum(pv) / I   # MCS estimator
-                        SE = np.std(pv) / math.sqrt(I)
-                        # standard error
-                        error = V0_MCS - V0
-                        rel_error = (V0_MCS - V0) / V0
-                        PY1_acc = abs(error) < PY1
-                        PY2_acc = abs(rel_error) < PY2
-                        res = pd.DataFrame({'timestamp': datetime.now(),
-                                'otype': option, 'runs': runs, 'steps': M0,
-                                'paths': I, 'index_disc': s_disc,
-                                'var_disc': x_disc, 'anti_paths': antipath,
-                                'moment_matching': momatch, 'panel': panel,
-                                'maturity': T, 'strike': K, 'value': V0,
-                                'MCS_est': V0_MCS, 'SE': SE, 'error': error,
-                                'rel_error': rel_error, 'PY1': PY1, 'PY2': PY2,
-                                'PY1_acc': PY1_acc, 'PY2_acc': PY2_acc,
-                                'PY_acc': PY1_acc or PY2_acc},
-                               index=[0, ])
+        for _, panel in it.product(range(runs), range(4)):
+            # Correlation Matrix
+            v0, kappa_v, sigma_v, rho = para[panel]
+            covariance_matrix = np.zeros((2, 2), dtype=np.float)
+            covariance_matrix[0] = [1.0, rho]
+            covariance_matrix[1] = [rho, 1.0]
+            cho_matrix = np.linalg.cholesky(covariance_matrix)
+            if verbose:
+                print("\nResults for Panel %d\n" % (panel + 1))
+                print(tmpl_1)
+            for T in t_list:  # maturity list
+                # memory clean-up
+                v, S, rand, h = 0.0, 0.0, 0.0, 0.0
+                M = int(M0 * T)  # number of total time steps
+                dt = T / M  # time interval in years
+                # random numbers
+                rand = random_number_generator(M, I)
+                # volatility process paths
+                v = SRD_generate_paths(x_disc, v0, kappa_v, theta_v,
+                                       sigma_v, T, M, I, rand, 1,
+                                       cho_matrix)
+                # index level process paths
+                S = H93_generate_paths(S0, r, v, 0, cho_matrix)
+                for K in k_list:
+                    # European option values
+                    B0T = math.exp(-r * T)  # discount factor
+                    # European call option value (semi-analytical)
+                    C0 = H93_call_value(S0, K, T, r, kappa_v,
+                                        theta_v, sigma_v, rho, v0)
+                    P0 = C0 + K * B0T - S0
+                    if option is 'PUT':
+                        # benchmark value
+                        V0 = P0
+                        # inner value matrix put
+                        h = np.maximum(K - S, 0)
+                    elif option is 'CALL':
+                        # benchmark value
+                        V0 = C0
+                        # inner value matrix call
+                        h = np.maximum(S - K, 0)
+                    else:
+                        print("No valid option type.")
+                        sys.exit(0)
+                    pv = B0T * h[-1]  # present value vector
+                    V0_MCS = np.sum(pv) / I   # MCS estimator
+                    SE = np.std(pv) / math.sqrt(I)
+                    # standard error
+                    error = V0_MCS - V0
+                    rel_error = (V0_MCS - V0) / V0
+                    PY1_acc = abs(error) < PY1
+                    PY2_acc = abs(rel_error) < PY2
+                    res = pd.DataFrame({'timestamp': datetime.now(),
+                            'otype': option, 'runs': runs, 'steps': M0,
+                            'paths': I, 'index_disc': s_disc,
+                            'var_disc': x_disc, 'anti_paths': antipath,
+                            'moment_matching': momatch, 'panel': panel,
+                            'maturity': T, 'strike': K, 'value': V0,
+                            'MCS_est': V0_MCS, 'SE': SE, 'error': error,
+                            'rel_error': rel_error, 'PY1': PY1, 'PY2': PY2,
+                            'PY1_acc': PY1_acc, 'PY2_acc': PY2_acc,
+                            'PY_acc': PY1_acc or PY2_acc},
+                           index=[0, ])
 
-                        if verbose:
-                            print(tmpl_2 % (T, K, V0, V0_MCS, error,
-                                            rel_error, PY1_acc, PY2_acc))
+                    if verbose:
+                        print(tmpl_2 % (T, K, V0, V0_MCS, error,
+                                        rel_error, PY1_acc, PY2_acc))
 
-                        results = results.append(res, ignore_index=True)
+                    results = results.append(res, ignore_index=True)
 
     if write:
         d = str(datetime.now().replace(microsecond=0))
         d = d.replace('-', '_').replace(' ', '_').replace(':', '_')
-        h5 = pd.HDFStore('10_mcs/mcs_european_%s.h5' % d, 'w')
+        h5 = pd.HDFStore(f'10_mcs/mcs_european_{d}.h5', 'w')
         h5['results'] = results
         h5.close()
 

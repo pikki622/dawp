@@ -139,7 +139,7 @@ def plot_calibration_results(p0):
     plt.figure(figsize=(8, 6))
     plt.subplot(211)
     plt.grid()
-    plt.title('Maturity %s' % str(options['Maturity'].iloc[0])[:10])
+    plt.title(f"Maturity {str(options['Maturity'].iloc[0])[:10]}")
     plt.ylabel('option values')
     plt.plot(options.Strike, options.Call, 'b', label='market')
     plt.plot(options.Strike, options.Model, 'ro', label='model')

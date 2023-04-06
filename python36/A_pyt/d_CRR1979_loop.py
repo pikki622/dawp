@@ -10,7 +10,7 @@ from c_parameters import *
 S = np.zeros((M + 1, M + 1), dtype=np.float)  # index level array
 S[0, 0] = S0
 z = 0
-for j in range(1, M + 1, 1):
+for j in range(1, M + 1):
     z += 1
     for i in range(z + 1):
         S[i, j] = S[0, 0] * (u ** j) * (d ** (i * 2))
@@ -18,7 +18,7 @@ for j in range(1, M + 1, 1):
 # Array Initialization for Inner Values
 iv = np.zeros((M + 1, M + 1), dtype=np.float)  # inner value array
 z = 0
-for j in range(0, M + 1, 1):
+for j in range(M + 1):
     for i in range(z + 1):
         iv[i, j] = round(max(S[i, j] - K, 0), 8)
     z += 1

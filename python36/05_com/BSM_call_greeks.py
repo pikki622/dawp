@@ -42,8 +42,7 @@ def BSM_delta(St, K, t, T, r, sigma):
         European call option DELTA
     '''
     d1 = d1f(St, K, t, T, r, sigma)
-    delta = N(d1)
-    return delta
+    return N(d1)
 
 
 def BSM_gamma(St, K, t, T, r, sigma):
@@ -70,8 +69,7 @@ def BSM_gamma(St, K, t, T, r, sigma):
         European call option GAMM
     '''
     d1 = d1f(St, K, t, T, r, sigma)
-    gamma = dN(d1) / (St * sigma * math.sqrt(T - t))
-    return gamma
+    return dN(d1) / (St * sigma * math.sqrt(T - t))
 
 
 def BSM_theta(St, K, t, T, r, sigma):
@@ -99,9 +97,10 @@ def BSM_theta(St, K, t, T, r, sigma):
     '''
     d1 = d1f(St, K, t, T, r, sigma)
     d2 = d1 - sigma * math.sqrt(T - t)
-    theta = -(St * dN(d1) * sigma / (2 * math.sqrt(T - t)) +
-              r * K * math.exp(-r * (T - t)) * N(d2))
-    return theta
+    return -(
+        St * dN(d1) * sigma / (2 * math.sqrt(T - t))
+        + r * K * math.exp(-r * (T - t)) * N(d2)
+    )
 
 
 def BSM_rho(St, K, t, T, r, sigma):
@@ -129,8 +128,7 @@ def BSM_rho(St, K, t, T, r, sigma):
     '''
     d1 = d1f(St, K, t, T, r, sigma)
     d2 = d1 - sigma * math.sqrt(T - t)
-    rho = K * (T - t) * math.exp(-r * (T - t)) * N(d2)
-    return rho
+    return K * (T - t) * math.exp(-r * (T - t)) * N(d2)
 
 
 def BSM_vega(St, K, t, T, r, sigma):
@@ -157,8 +155,7 @@ def BSM_vega(St, K, t, T, r, sigma):
         European call option VEGA
     '''
     d1 = d1f(St, K, t, T, r, sigma)
-    vega = St * dN(d1) * math.sqrt(T - t)
-    return vega
+    return St * dN(d1) * math.sqrt(T - t)
 
 #
 # Plotting the Greeks
@@ -187,4 +184,4 @@ def plot_greeks(function, greek):
     plot.plot_wireframe(x, y, V)
     plot.set_xlabel('strike $K$')
     plot.set_ylabel('maturity $T$')
-    plot.set_zlabel('%s(K, T)' % greek)
+    plot.set_zlabel(f'{greek}(K, T)')

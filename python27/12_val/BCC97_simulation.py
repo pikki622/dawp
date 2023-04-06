@@ -55,8 +55,7 @@ def generate_cholesky(rho):
     covariance[1] = [rho_rs, 1.0, rho, 0.0]
     covariance[2] = [0.0, rho, 1.0, 0.0]
     covariance[3] = [0.0, 0.0, 0.0, 1.0]
-    cho_matrix = np.linalg.cholesky(covariance)
-    return cho_matrix
+    return np.linalg.cholesky(covariance)
 
 def random_number_generator(M, I, anti_paths, moment_matching):
     ''' Function to generate pseudo-random numbers.

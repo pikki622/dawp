@@ -85,8 +85,7 @@ def CIR_forward_rate(opt):
           (2 * g + (kappa_r + g) * (np.exp(g * t) - 1)))
     sum2 = r0 * ((4 * g ** 2 * np.exp(g * t)) /
             (2 * g + (kappa_r + g) * (np.exp(g * t) - 1)) ** 2)
-    forward_rate = sum1 + sum2
-    return forward_rate
+    return sum1 + sum2
 
 #
 # Error Function
@@ -99,18 +98,20 @@ def CIR_error_function(opt):
     if kappa_r < 0 or theta_r < 0 or sigma_r < 0.001:
         return 100
     forward_rates = CIR_forward_rate(opt)
-    MSE = np.sum((f - forward_rates) ** 2) / len(f)
-    # print opt, MSE
-    return MSE
+    return np.sum((f - forward_rates) ** 2) / len(f)
 
 #
 # Calibration Procedure
 #
 def CIR_calibration():
-    opt = fmin(CIR_error_function, [1.0, 0.02, 0.1],
-            xtol=0.00001, ftol=0.00001,
-            maxiter=300, maxfun=500)
-    return opt
+    return fmin(
+        CIR_error_function,
+        [1.0, 0.02, 0.1],
+        xtol=0.00001,
+        ftol=0.00001,
+        maxiter=300,
+        maxfun=500,
+    )
 
 #
 # Graphical Results Output

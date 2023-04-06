@@ -90,11 +90,11 @@ def generate_plot(opt, options):
     mats = sorted(set(options['Maturity']))
     options = options.set_index('Strike')
     for i, mat in enumerate(mats):
-        options[options['Maturity'] == mat][['Call', 'Model']].\
-                plot(style=['b-', 'ro'], title='%s' % str(mat)[:10],
-                grid=True)
+        options[options['Maturity'] == mat][['Call', 'Model']].plot(
+            style=['b-', 'ro'], title=f'{str(mat)[:10]}', grid=True
+        )
         plt.ylabel('option value')
-        plt.savefig('../images/08_m76/M76_calibration_3_%s.pdf' % i)
+        plt.savefig(f'../images/08_m76/M76_calibration_3_{i}.pdf')
 
 if __name__ == '__main__':
     #

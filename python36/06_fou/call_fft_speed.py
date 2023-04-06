@@ -28,5 +28,4 @@ def call_fft_value(M):
     qv = np.zeros(M + 1, dtype=np.float)
     qv[0] = q
     qv[1] = 1 - q
-    C0 = fft(math.exp(-r * T) * ifft(CT) * fft(qv) ** M)
-    return C0
+    return fft(math.exp(-r * T) * ifft(CT) * fft(qv) ** M)

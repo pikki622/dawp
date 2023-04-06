@@ -60,7 +60,7 @@ def BSM_lsm_put_value(S0, M, I):
     df = math.exp(-r * dt)  # discount factor
     S = np.zeros((M + 1, I), dtype=np.float)  # stock price matrix
     S[0] = S0  # initial values
-    for t in range(1, M + 1, 1):  # stock price at t
+    for t in range(1, M + 1):  # stock price at t
         S[t] = S[t - 1] * (np.exp((r - sigma ** 2 / 2) * dt +
                                   sigma * math.sqrt(dt) * rand[t]))
     h = np.maximum(K - S, 0)  # inner values
@@ -103,19 +103,18 @@ def BSM_hedge_run(p=0):
     print("APPROXIMATION OF FIRST ORDER ")
     print("-----------------------------")
     print(" %7s | %7s | %7s " % ('step', 'S_t', 'Delta'))
-    for t in range(1, M, 1):
-        if ex[t, p] == 0:  # if option is alive
-            St = S[t, p]  # relevant index level
-            diff = (np.polyval(rg[t], St + ds) -
-                    np.polyval(rg[t], St))
-            # numerator of difference quotient
-            delt[t] = diff / ds  # delta as difference quotient
-            print(" %7d | %7.2f | %7.2f" % (t, St, delt[t]))
-            if (S[t, p] - S[t - 1, p]) * (delt[t] - delt[t - 1]) < 0:
-                print("          wrong")
-        else:
+    for t in range(1, M):
+        if ex[t, p] != 0:
             break
 
+        St = S[t, p]  # relevant index level
+        diff = (np.polyval(rg[t], St + ds) -
+                np.polyval(rg[t], St))
+        # numerator of difference quotient
+        delt[t] = diff / ds  # delta as difference quotient
+        print(" %7d | %7.2f | %7.2f" % (t, St, delt[t]))
+        if (S[t, p] - S[t - 1, p]) * (delt[t] - delt[t - 1]) < 0:
+            print("          wrong")
     delt[0] = del_0
     print()
     print("DYNAMIC HEDGING OF AMERICAN PUT (BSM)")
@@ -135,7 +134,7 @@ def BSM_hedge_run(p=0):
     print(68 * "-")
     print("step|" + 7 * " %7s|" % ('S_t', 'Port', 'Put',
                                    'Diff', 'Stock', 'Bond', 'Cost'))
-    for j in range(1, t, 1):
+    for j in range(1, t):
         vt[j] = BSM_lsm_put_value(S[j, p], M - j, I)[0]
         po[j] = delt[j - 1] * S[j, p] + bo * math.exp(r * dt)
         bo = po[j] - delt[j] * S[j, p]  # bond position value

@@ -96,8 +96,9 @@ def generate_plot(opt, options):
     #
     options = options.set_index('Strike')
     fig, ax = plt.subplots(2, sharex=True, figsize=(8, 7))
-    options[['Call', 'Model']].plot(style=['b-', 'ro'],
-                    title='%s' % str(option['Maturity'])[:10], ax=ax[0])
+    options[['Call', 'Model']].plot(
+        style=['b-', 'ro'], title=f"{str(option['Maturity'])[:10]}", ax=ax[0]
+    )
     ax[0].set_ylabel('option values')
     ax[0].grid(True)
     xv = options.index.values

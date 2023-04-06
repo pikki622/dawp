@@ -16,11 +16,8 @@ S = S0 * mu * md
 
 # Valuation by Risk-Neutral Discounting
 pv = np.maximum(S - K, 0)  # present value array initialized with inner values
-z = 0
-for i in range(M - 1, -1, -1):  # backwards induction
+for z, i in enumerate(range(M - 1, -1, -1)):  # backwards induction
     pv[0:M - z, i] = (q * pv[0:M - z, i + 1] +
                       (1 - q) * pv[1:M - z + 1, i + 1]) * df
-    z += 1
-
 # Result Output
 print("Value of European call option is %8.3f" % pv[0, 0])

@@ -10,9 +10,7 @@ import scipy.optimize as sco
 
 def y(x):
     ''' Function to Minimize. '''
-    if x < -np.pi or x > 0:
-        return 0.0
-    return np.sin(x)
+    return 0.0 if x < -np.pi or x > 0 else np.sin(x)
 
 
 gmin = sco.brute(y, ((-np.pi, 0, 0.01), ), finish=None)  # global optimization

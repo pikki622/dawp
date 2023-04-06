@@ -35,8 +35,7 @@ def dN(x, mu, sigma):
         value of probability density function
     '''
     z = (x - mu) / sigma
-    pdf = np.exp(-0.5 * z ** 2) / math.sqrt(2 * math.pi * sigma ** 2)
-    return pdf
+    return np.exp(-0.5 * z ** 2) / math.sqrt(2 * math.pi * sigma ** 2)
 
 
 #

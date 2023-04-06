@@ -25,8 +25,7 @@ def plot_term_structure(data):
     ''' Plot the term structure of Euribor rates. '''
     plt.figure(figsize=(10, 5))
     for i, mat in enumerate(['1w', '1m', '6m', '12m']):
-        plt.plot(data[mat].index, data[mat].values,
-                 'b%s' % markers[i], label=mat)
+        plt.plot(data[mat].index, data[mat].values, f'b{markers[i]}', label=mat)
     plt.grid()
     plt.legend()
     plt.xlabel('strike')

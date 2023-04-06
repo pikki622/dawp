@@ -56,9 +56,9 @@ def BSM_call_value(S0, K, T, r, sigma):
         / (sigma * np.sqrt(T))
     d2 = (np.log(S0 / K) + (r - 0.5 * sigma ** 2) * T) \
         / (sigma * np.sqrt(T))
-    BS_C = (S0 * stats.norm.cdf(d1, 0.0, 1.0) -
-            K * np.exp(-r * T) * stats.norm.cdf(d2, 0.0, 1.0))
-    return BS_C
+    return S0 * stats.norm.cdf(d1, 0.0, 1.0) - K * np.exp(
+        -r * T
+    ) * stats.norm.cdf(d2, 0.0, 1.0)
 
 
 #
@@ -90,27 +90,26 @@ def BSM_call_value_INT(S0, K, T, r, sigma):
     '''
     int_value = quad(lambda u:
                      BSM_integral_function(u, S0, K, T, r, sigma), 0, 100)[0]
-    call_value = max(0, S0 - np.exp(-r * T) * np.sqrt(S0 * K) /
-                     np.pi * int_value)
-    return call_value
+    return max(0, S0 - np.exp(-r * T) * np.sqrt(S0 * K) / np.pi * int_value)
 
 
 def BSM_integral_function(u, S0, K, T, r, sigma):
     ''' Valuation of European call option in BSM model via Lewis (2001)
     --> Fourier-based approach: integral function. '''
     cf_value = BSM_characteristic_function(u - 1j * 0.5, 0.0, T, r, sigma)
-    int_value = 1 / (u ** 2 + 0.25) \
-        * (np.exp(1j * u * np.log(S0 / K)) * cf_value).real
-    return int_value
+    return (
+        1 / (u**2 + 0.25) * (np.exp(1j * u * np.log(S0 / K)) * cf_value).real
+    )
 
 
 def BSM_characteristic_function(v, x0, T, r, sigma):
     '''  Valuation of European call option in BSM model via
     Lewis (2001) and Carr-Madan (1999)
     --> Fourier-based approach: charcteristic function. '''
-    cf_value = np.exp(((x0 / T + r - 0.5 * sigma ** 2) * 1j * v -
-                       0.5 * sigma ** 2 * v ** 2) * T)
-    return cf_value
+    return np.exp(
+        ((x0 / T + r - 0.5 * sigma**2) * 1j * v - 0.5 * sigma**2 * v**2)
+        * T
+    )
 
 #
 # Fourier Transform with FFT
@@ -187,9 +186,7 @@ def BSM_call_value_FFT(S0, K, T, r, sigma):
         payoff = (fft(FFTFunc)).real
         CallValueM = payoff / (np.sinh(alpha * k) * np.pi)
     pos = int((k + b) / eps)
-    CallValue = CallValueM[pos] * S0
-    # klist = np.exp((np.arange(0, N, 1) - 1) * eps - b) * S0
-    return CallValue  # , klist[pos - 50:pos + 50]
+    return CallValueM[pos] * S0
 
 
 def plot_val_differences(vtype='int'):

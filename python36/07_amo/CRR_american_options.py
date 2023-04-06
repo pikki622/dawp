@@ -88,12 +88,10 @@ def CRR_option_valuation(otype, M=500):
     C = np.zeros((M + 1, M + 1), dtype=np.float)  # continuation values
     ex = np.zeros((M + 1, M + 1), dtype=np.float)  # exercise matrix
 
-    z = 0
-    for i in range(M - 1, -1, -1):
+    for z, i in enumerate(range(M - 1, -1, -1)):
         C[0:M - z, i] = (q * V[0:M - z, i + 1] +
                          (1 - q) * V[1:M - z + 1, i + 1]) * df
         V[0:M - z, i] = np.where(h[0:M - z, i] > C[0:M - z, i],
                                  h[0:M - z, i], C[0:M - z, i])
         ex[0:M - z, i] = np.where(h[0:M - z, i] > C[0:M - z, i], 1, 0)
-        z += 1
     return V[0, 0]

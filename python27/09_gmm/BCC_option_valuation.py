@@ -79,9 +79,7 @@ def BCC_call_value(S0, K, T, r, kappa_v, theta_v, sigma_v, rho, v0,
     '''
     int_value = quad(lambda u: BCC_int_func(u, S0, K, T, r, kappa_v, theta_v, 
                 sigma_v, rho, v0, lamb, mu, delta), 0, np.inf, limit=250)[0]
-    call_value = max(0, S0 - np.exp(-r * T) * np.sqrt(S0 * K)
-                            / np.pi * int_value)
-    return call_value
+    return max(0, S0 - np.exp(-r * T) * np.sqrt(S0 * K) / np.pi * int_value)
 
 
 def H93_call_value(S0, K, T, r, kappa_v, theta_v, sigma_v, rho, v0):
@@ -117,9 +115,7 @@ def H93_call_value(S0, K, T, r, kappa_v, theta_v, sigma_v, rho, v0):
     '''
     int_value = quad(lambda u: H93_int_func(u, S0, K, T, r, kappa_v,
                         theta_v, sigma_v, rho, v0), 0, np.inf, limit=250)[0]
-    call_value = max(0, S0 - np.exp(-r * T) * np.sqrt(S0 * K)
-                            / np.pi * int_value)
-    return call_value
+    return max(0, S0 - np.exp(-r * T) * np.sqrt(S0 * K) / np.pi * int_value)
 
 
 def M76_call_value(S0, K, T, r, v0, lamb, mu, delta):
@@ -151,9 +147,7 @@ def M76_call_value(S0, K, T, r, v0, lamb, mu, delta):
     sigma = np.sqrt(v0)
     int_value = quad(lambda u: M76_int_func_sa(u, S0, K, T, r,
                         sigma, lamb, mu, delta), 0, np.inf, limit=250)[0]
-    call_value = max(0, S0 - np.exp(-r * T) * np.sqrt(S0 * K)
-                            / np.pi * int_value)
-    return call_value
+    return max(0, S0 - np.exp(-r * T) * np.sqrt(S0 * K) / np.pi * int_value)
 
 
 #
@@ -169,9 +163,11 @@ def BCC_int_func(u, S0, K, T, r, kappa_v, theta_v, sigma_v, rho, v0,
     Parameter definitions see function BCC_call_value.'''
     char_func_value = BCC_char_func(u - 1j * 0.5, T, r, kappa_v, theta_v, 
                         sigma_v, rho, v0, lamb, mu, delta)
-    int_func_value = 1 / (u ** 2 + 0.25) \
-            * (np.exp(1j * u * np.log(S0 / K)) * char_func_value).real
-    return int_func_value
+    return (
+        1
+        / (u**2 + 0.25)
+        * (np.exp(1j * u * np.log(S0 / K)) * char_func_value).real
+    )
 
 
 def H93_int_func(u, S0, K, T, r, kappa_v, theta_v, sigma_v, rho, v0):
@@ -181,9 +177,11 @@ def H93_int_func(u, S0, K, T, r, kappa_v, theta_v, sigma_v, rho, v0):
     Parameter definitions see function H93_call_value.'''
     char_func_value = H93_char_func(u - 1j * 0.5, T, r, kappa_v,
                                     theta_v, sigma_v, rho, v0)
-    int_func_value = 1 / (u ** 2 + 0.25) \
-            * (np.exp(1j * u * np.log(S0 / K)) * char_func_value).real
-    return int_func_value
+    return (
+        1
+        / (u**2 + 0.25)
+        * (np.exp(1j * u * np.log(S0 / K)) * char_func_value).real
+    )
 
 
 def M76_int_func_sa(u, S0, K, T, r, sigma, lamb, mu, delta):
@@ -193,9 +191,11 @@ def M76_int_func_sa(u, S0, K, T, r, sigma, lamb, mu, delta):
     Parameter definitions see function M76_call_value.'''
     char_func_value = M76_char_func_sa(u - 0.5 * 1j, T, r, sigma,
                                         lamb, mu, delta)
-    int_func_value = 1 / (u ** 2 + 0.25) \
-            * (np.exp(1j * u * np.log(S0 / K)) * char_func_value).real
-    return int_func_value
+    return (
+        1
+        / (u**2 + 0.25)
+        * (np.exp(1j * u * np.log(S0 / K)) * char_func_value).real
+    )
 
 #
 # Characteristic Functions
@@ -228,8 +228,7 @@ def H93_char_func(u, T, r, kappa_v, theta_v, sigma_v, rho, v0):
                 - 2 * np.log((1 - c3 * np.exp(c2 * T)) / (1 - c3))))
     H2 = ((kappa_v - rho * sigma_v * u * 1j + c2) / sigma_v ** 2
           * ((1 - np.exp(c2 * T)) / (1 - c3 * np.exp(c2 * T))))
-    char_func_value = np.exp(H1 + H2 * v0)
-    return char_func_value
+    return np.exp(H1 + H2 * v0)
 
 
 def M76_char_func(u, T, lamb, mu, delta):
@@ -238,9 +237,13 @@ def M76_char_func(u, T, lamb, mu, delta):
 
     Parameter definitions see function M76_call_value.'''
     omega = -lamb * (np.exp(mu + 0.5 * delta ** 2) - 1)
-    char_func_value = np.exp((1j * u * omega + lamb
-            * (np.exp(1j * u * mu - u ** 2 * delta ** 2 * 0.5) - 1)) * T)
-    return char_func_value
+    return np.exp(
+        (
+            1j * u * omega
+            + lamb * (np.exp(1j * u * mu - u**2 * delta**2 * 0.5) - 1)
+        )
+        * T
+    )
 
 
 def M76_char_func_sa(u, T, r, sigma, lamb, mu, delta):
@@ -249,10 +252,14 @@ def M76_char_func_sa(u, T, r, sigma, lamb, mu, delta):
 
     Parameter definitions see function M76_call_value.'''
     omega = r - 0.5 * sigma ** 2 - lamb * (np.exp(mu + 0.5 * delta ** 2) - 1)
-    char_func_value = np.exp((1j * u * omega - 0.5 * u ** 2 * sigma ** 2
-                + lamb * (np.exp(1j * u * mu - u ** 2 * delta ** 2 * 0.5)
-                    - 1)) * T)
-    return char_func_value
+    return np.exp(
+        (
+            1j * u * omega
+            - 0.5 * u**2 * sigma**2
+            + lamb * (np.exp(1j * u * mu - u**2 * delta**2 * 0.5) - 1)
+        )
+        * T
+    )
 
 if __name__ == '__main__':
     #

@@ -164,7 +164,7 @@ def BCC97_hedge_run(p):
     print(82 * "-")
     print("step|" + 7 * " %9s|" % ('S_t', 'Port', 'Put',
                                    'Diff', 'Stock', 'Bond', 'Cost'))
-    for t in range(1, M + 1, 1):
+    for t in range(1, M + 1):
         if ex[t, p] == 0:
             df = math.exp((r[t, p] + r[t - 1, p]) / 2 * dt)
             if t != M:

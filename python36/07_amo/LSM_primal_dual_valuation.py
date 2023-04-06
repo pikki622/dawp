@@ -58,7 +58,7 @@ def generate_paths(I):
     ''' Function to generate I stock price paths. '''
     S = np.zeros((M + 1, I), dtype=np.float)  # stock matrix
     S[0] = S0  # initial values
-    for t in range(1, M + 1, 1):  # stock price paths
+    for t in range(1, M + 1):  # stock price paths
         ran = generate_random_numbers(I)
         S[t] = S[t - 1] * np.exp((r - sigma ** 2 / 2) * dt +
                                  sigma * ran * math.sqrt(dt))
@@ -90,9 +90,7 @@ def nested_monte_carlo(St, J):
         simulated nested paths
     '''
     ran = generate_random_numbers(J)
-    paths = St * np.exp((r - sigma ** 2 / 2) * dt +
-                        sigma * ran * math.sqrt(dt))
-    return paths
+    return St * np.exp((r - sigma**2 / 2) * dt + sigma * ran * math.sqrt(dt))
 
 
 #
@@ -100,26 +98,25 @@ def nested_monte_carlo(St, J):
 #
 para = it.product(otype, M, I1, I2, J, reg, AP, MM, ITM)
 count = 0
+T = 1.0  # time-to-maturity
 for pa in para:
     otype, M, I1, I2, J, reg, AP, MM, ITM = pa
     # General Parameters and Option Values
     if otype == 1:
         # Parameters -- American Put Option
         S0 = 36.  # initial stock level
-        T = 1.0  # time-to-maturity
         r = 0.06  # short rate
         sigma = 0.2  # volatility
         V0_true = 4.48637  # American Put Option (500 steps bin. model)
     else:
         # Parameters -- Short Condor Spread
         S0 = 100.  # initial stock level
-        T = 1.0  # time-to-maturity
         r = 0.05  # short rate
         sigma = 0.5  # volatility
         V0_true = 26.97705  # Short Condor Spread (500 steps bin. model)
     dt = T / M  # length of time interval
     df = math.exp(-r * dt)  # discount factor per time interval
-    for j in range(runs):
+    for _ in range(runs):
         count += 1
         # regression estimation
         S = generate_paths(I1)  # generate stock price paths
@@ -133,10 +130,7 @@ for pa in para:
             if ITM:
                 S_itm = np.compress(itm[t] == 1, S[t])
                 V_itm = np.compress(itm[t] == 1, V[t + 1])
-                if len(V_itm) == 0:
-                    rg[t] = 0.0
-                else:
-                    rg[t] = np.polyfit(S_itm, V_itm * df, reg)
+                rg[t] = 0.0 if len(V_itm) == 0 else np.polyfit(S_itm, V_itm * df, reg)
             else:
                 # regression at time t
                 rg[t] = np.polyfit(S[t], V[t + 1] * df, reg)
@@ -188,10 +182,12 @@ for pa in para:
             'AV_se': (AV - V0_true) ** 2}, index=[0,]), ignore_index=True)
 
 t1 = time()
-print("Total time in min %s" % ((t1 - t0) / 60))
+print(f"Total time in min {(t1 - t0) / 60}")
 
 if write:
-    h5 = pd.HDFStore('results_%s_%s.h5' % (datetime.now().date(),
-                     str(datetime.now().time())[:8]), 'w')
+    h5 = pd.HDFStore(
+        f'results_{datetime.now().date()}_{str(datetime.now().time())[:8]}.h5',
+        'w',
+    )
     h5['results'] = results
     h5.close()

@@ -37,11 +37,9 @@ def convolution(a, b):
     n = len(a)
     c = np.zeros(n, dtype=np.float)
     for j in range(n):
-        s = 0
-        for k in range(n):
-            if j - k >= 0:
-                s += a[j - k] * b[k]
-            else:
-                s += a[j - k + n] * b[k]
+        s = sum(
+            a[j - k] * b[k] if j - k >= 0 else a[j - k + n] * b[k]
+            for k in range(n)
+        )
         c[j] = s
     return c

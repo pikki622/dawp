@@ -47,7 +47,7 @@ def BCC97_hedge_simulation(M=50, I=10000):
         bo = V0LSM - delt[0] * S0  # initial bond position value
         p = run
         run += 1
-        for t in range(1, M + 1, 1):
+        for t in range(1, M + 1):
             if ex[t, p] == 0:
                 df = math.exp((r[t, p] + r[t - 1, p]) / 2 * dt)
                 if t != M:

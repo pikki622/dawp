@@ -68,9 +68,7 @@ def B(alpha):
     b_2 = b2(alpha)
     r0, kappa_r, theta_r, sigma_r, t, T = alpha
     E_rt = theta_r + np.exp(-kappa_r * t) * (r0 - theta_r)
-        # expected value of r_t
-    zcb_value = b_1 * np.exp(-b_2 * E_rt)
-    return zcb_value
+    return b_1 * np.exp(-b_2 * E_rt)
 
 if __name__ == '__main__':
     #

@@ -16,7 +16,7 @@ def generate_subplot(n):
         plt.plot(y[l].real, y[l].imag, 'ro')
         plt.plot((0, y[l].real), (0.0, y[l].imag), 'b')
     plt.axis([-1.1, 1.1, -1.1, 1.1])
-    plt.xlabel('$n=%s$' % n)
+    plt.xlabel(f'$n={n}$')
 
 
 def generate_plot():

@@ -55,8 +55,7 @@ def generate_cholesky(rho):
     covariance[1] = [rho_rs, 1.0, rho, 0.0]
     covariance[2] = [0.0, rho, 1.0, 0.0]
     covariance[3] = [0.0, 0.0, 0.0, 1.0]
-    cho_matrix = np.linalg.cholesky(covariance)
-    return cho_matrix
+    return np.linalg.cholesky(covariance)
 
 
 def random_number_generator(M, I, anti_paths, moment_matching):
@@ -187,7 +186,7 @@ def B96_generate_paths(S0, r, v, lamb, mu, delta, rand, row1, row2,
     sdt = math.sqrt(dt)
     ranp = np.random.poisson(lamb * dt, (M + 1, I))
     bias = 0.0
-    for t in range(1, M + 1, 1):
+    for t in range(1, M + 1):
         ran = np.dot(cho_matrix, rand[:, t, :])
         if moment_matching:
             bias = np.mean(np.sqrt(v[t]) * ran[row1] * sdt)

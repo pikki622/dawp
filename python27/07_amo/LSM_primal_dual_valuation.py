@@ -58,7 +58,7 @@ def generate_paths(I):
     ''' Function to generate I stock price paths. '''
     S = np.zeros((M + 1, I), dtype=np.float)  # stock matrix
     S[0] = S0  # initial values
-    for t in range(1, M + 1, 1):  # stock price paths
+    for t in range(1, M + 1):  # stock price paths
         ran = generate_random_numbers(I)
         S[t] = S[t - 1] * np.exp((r - sigma ** 2 / 2) * dt
                                 + sigma * ran * math.sqrt(dt))
@@ -90,9 +90,7 @@ def nested_monte_carlo(St, J):
         simulated nested paths
     '''
     ran = generate_random_numbers(J)
-    paths = St * np.exp((r - sigma ** 2 / 2) * dt
-                       + sigma * ran * math.sqrt(dt))
-    return paths
+    return St * np.exp((r - sigma**2 / 2) * dt + sigma * ran * math.sqrt(dt))
 
 #
 # Valuation

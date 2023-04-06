@@ -54,10 +54,9 @@ class call_option(object):
 
     def d1(self):
         ''' Helper function. '''
-        d1 = ((log(self.S0 / self.K)
-            + (self.r + 0.5 * self.sigma ** 2) * self.T)
-            / (self.sigma * sqrt(self.T)))
-        return d1
+        return (
+            log(self.S0 / self.K) + (self.r + 0.5 * self.sigma**2) * self.T
+        ) / (self.sigma * sqrt(self.T))
         
     def value(self):
         ''' Return option value. '''
@@ -66,16 +65,15 @@ class call_option(object):
         d2 = ((log(self.S0 / self.K)
             + (self.r - 0.5 * self.sigma ** 2) * self.T)
             / (self.sigma * sqrt(self.T)))
-        value = (self.S0 * stats.norm.cdf(d1, 0.0, 1.0)
-            - self.K * exp(-self.r * self.T) * stats.norm.cdf(d2, 0.0, 1.0))
-        return value
+        return self.S0 * stats.norm.cdf(d1, 0.0, 1.0) - self.K * exp(
+            -self.r * self.T
+        ) * stats.norm.cdf(d2, 0.0, 1.0)
         
     def vega(self):
         ''' Return Vega of option. '''
         self.update_ttm()
         d1 = self.d1()
-        vega = self.S0 * stats.norm.pdf(d1, 0.0, 1.0) * sqrt(self.T)
-        return vega
+        return self.S0 * stats.norm.pdf(d1, 0.0, 1.0) * sqrt(self.T)
 
     def imp_vol(self, C0, sigma_est=0.2):
         ''' Return implied volatility given option price. '''

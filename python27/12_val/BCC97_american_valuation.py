@@ -86,8 +86,7 @@ def BCC97_lsm_valuation(S, r, v, K, T, M, I):
         V[t] = np.where(h[t] > erg, h[t], V[t + 1] * df)
             # exercise decision
     df = np.exp(-((r[0] + r[1]) / 2) * dt)
-    LSM_value = max(np.sum(V[1, :] * df) / I, h[0, 0])   # LSM estimator
-    return LSM_value
+    return max(np.sum(V[1, :] * df) / I, h[0, 0])
 
 #
 # Valuation for Different Strikes & Maturities

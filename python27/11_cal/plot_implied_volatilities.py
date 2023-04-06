@@ -51,7 +51,7 @@ def plot_implied_volatilities(options, model):
         plt.legend(loc=0)
         plt.axis([min(opts.Strike) - 10, max(opts.Strike) + 10,
               min(opts.market_iv) - 0.015, max(opts.market_iv) + 0.015])
-        plt.title('Maturity %s' % str(mat)[:10])
+        plt.title(f'Maturity {str(mat)[:10]}')
         plt.subplot(212)
         plt.grid(True)
         wi = 5.0
@@ -62,5 +62,4 @@ def plot_implied_volatilities(options, model):
         yma = max(diffs) + (max(diffs) - min(diffs)) * 0.1
         plt.axis([min(opts.Strike) - 10, max(opts.Strike) + 10, ymi, yma])
         plt.tight_layout()
-        plt.savefig('../images/11_cal/%s_calibration_iv_%s.pdf'
-                        % (model, str(mat)[:10]))
+        plt.savefig(f'../images/11_cal/{model}_calibration_iv_{str(mat)[:10]}.pdf')
